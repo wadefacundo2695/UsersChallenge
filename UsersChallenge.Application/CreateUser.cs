@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using UsersChallenge.Domain.Exceptions;
 using UsersChallenge.Domain.Ports;
 
 namespace UsersChallenge.Application
@@ -14,7 +15,10 @@ namespace UsersChallenge.Application
 
         public async Task<User> Handle(CreateUserRequest request, CancellationToken cancellationToken)
         {
-            User user = new User
+            if (String.IsNullOrEmpty(request.Name))
+                throw new DomainException("Field name cannot be empty.");
+
+            var user = new User()
             {
                 Id = Guid.NewGuid(),
                 Name = request.Name,
@@ -28,7 +32,7 @@ namespace UsersChallenge.Application
 
     public class CreateUserRequest: IRequest<User>
     {
-        public string Name { get; set; }
+        public string? Name { get; set; }
         public DateTime BirthDate { get; set; }
     }
 }

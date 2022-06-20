@@ -19,10 +19,32 @@ namespace UsersApiChallenge.Controllers
             _mediator = mediator;
         }
 
-        [HttpPost(Name = "CreateUser")]
-        public async Task<User> Post([FromBody] CreateUserRequest request)
+        [HttpGet("{id}", Name = "GetUser")]
+        public async Task<ActionResult> Get(Guid id)
         {
-            return await _mediator.Send(request);
+            try
+            {
+                var user = await _mediator.Send(new FindUserRequest(id));
+                return Ok(user);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpPost(Name = "CreateUser")]
+        public async Task<ActionResult> Post([FromBody] CreateUserRequest request)
+        {
+            try
+            {
+                var user = await _mediator.Send(request);
+                return Ok($"User created with id '{user.Id}'");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpPut("{id}", Name = "UpdateUserState")]
@@ -33,7 +55,7 @@ namespace UsersApiChallenge.Controllers
                 await _mediator.Send(new UpdateUserStateRequest(id, Active));
                 return Ok($"User {id} updated.");
             }
-            catch (DomainException e)
+            catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
@@ -47,7 +69,7 @@ namespace UsersApiChallenge.Controllers
                 await _mediator.Send(new DeleteUserRequest(id));
                 return Ok($"User {id} deleted.");
             } 
-            catch (DomainException e)
+            catch (Exception e)
             {
                 return BadRequest(e.Message);
             }

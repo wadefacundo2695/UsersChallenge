@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
-builder.Services.AddMediatR(typeof(CreateUser), typeof(UpdateUserState), typeof(DeleteUser));
+builder.Services.AddMediatR(typeof(FindUser), typeof(CreateUser), typeof(UpdateUserState), typeof(DeleteUser));
 builder.Services.AddDbContext<UserContext>(opt => opt.UseInMemoryDatabase("Users"));
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 
